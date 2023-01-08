@@ -1,4 +1,5 @@
 const express = require('express');
+const table = require('console.table');
 // Import and require mysql2
 const mysql = require('mysql2');
 const fs = require('fs');
@@ -16,85 +17,71 @@ const db = mysql.createConnection(
         // MySQL username,
         user: 'root',
         // TODO: Add MySQL password here
-        password: '',
-        database: 'employees_db'
+        password: 'crunchyroll',
+        database: 'company_db'
     },
     console.log(`Connected to the employee database.`)
 );
 
-inquirer.prompt([
-    {
-        type: 'list',
-        message: 'Welcome to the Employee Management System Main Page.',
-        name: 'main',
-        default: "",
-        choices: [
-            {
-                name: "View all departments",
-                value: "dept1"
-            },
-            {
-                name: "View all roles",
-                value: "roles1"
-            },
-            {
-                name: "view all employees",
-                value: "employees1"
-            },
-            {
-                name: "add a department",
-                value: "deptAdd"
-            },
-            {
-                name: "add a role",
-                value: "rolesAdd"
-            },
-            {
-                name: "add an employee",
-                value: "employeesAdd"
-            },
-            {
-                name: "update an employee role",
-                value: "roleUpdate"
-            },
-        ],
-    },
-])
-    .then((response) =>
-        handleResponse(response)
+async function main() {
+    const db = mysql.createConnection(
+        {
+            host: 'localhost',
+            // MySQL username,
+            user: 'root',
+            // TODO: Add MySQL password here
+            password: 'crunchyroll',
+            database: 'company_db'
+        },
+        console.log(`Connected to the employee database.`)
     );
+    // Show the main menu
+    const answer = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'option',
+            message: 'What would you like to do?',
+            choices: [
+                'View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Add a role',
+                'Add an employee',
+                'Update an employee role',
+                '',
+            ],
+        },
+    ]);
 
-const handleResponse = (response) => {
-    if (response == "dept1") {
-        viewDepartments();
-    } else if (response = "roles1") {
-
-    } else if (response = "employees1") {
-
-    } else if (response = "deptAdd") {
-
-    } else if (response = "rolesAdd") {
-
-    } else if (response = "employeesAdd") {
-
-    } else if (response = "roleUpdate") {
-
+    switch (answer.option) {
+        case 'View all departments':
+            viewDepartments(db);
+            break;
+        case 'View all roles':
+            viewRoles(db);
+            break;
+        case 'View all employees':
+            viewEmployees(db);
+            break;
+        case 'Add a department':
+            addDepartment(db);
+            break;
+        case 'Add a role':
+            addRole(db);
+            break;
+        case 'Add an employee':
+            addEmployee(db);
+            break;
+        case 'Update an employee role':
+            updateEmployeeRole(db);
+            break;
     }
+
 }
 
-class Employee {
-    constructor(Firstname, Lastname, jobTitle, department, salary, id) {
-        this.FirstName = Firstname;
-        this.Lastname = Lastname;
-        this.job = jobTitle;
-        this.department = department;
-        this.salary = salary;
-        this.id = id;
-    }
-}
-
-let John = new Employee('John', 'Marston', 'Cowboy', 'engineering', 'Iowa', 7500, 1);
-console.log(John)
+// Start the application
+main();
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
 // THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
