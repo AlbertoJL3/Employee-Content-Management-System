@@ -127,6 +127,29 @@ async function viewRoles(connection) {
     }
 }
 
+// View all employees
+// View all employees
+async function viewEmployees(connection) {
+    try {
+        const params = [];
+        const sql = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id'
+        // Retrieve the list of employees from the database
+        connection.query(sql, params, (err, result) => {
+            if (err) {
+                res.status(400).json({ error: err.message });
+                return;
+            }
+            console.table(result)
+        }
+        );
+    } catch (error) {
+        console.error(error);
+    } finally {
+        // Return to the main menu
+        main();
+    }
+}
+
 
 // Start the application
 main();
