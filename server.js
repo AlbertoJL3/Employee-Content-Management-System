@@ -306,6 +306,70 @@ async function addEmployee(connection) {
     }
 }
 
+async function updateEmployeeRole(connection) {
+    try {
+        // Retrieve the list of employees and roles from the database
+        const employeeSql = 'SELECT id, first_name, last_name FROM employee';
+        const roleSql = 'SELECT id, title FROM role';
+        connection.query(employeeSql, (err, employeeRows) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+            connection.query(roleSql, (err, roleRows) => {
+                if (err) {
+                    console.log(err)
+                    return;
+                }
+
+                // Extract the employee names and role titles from the rows
+                const employees = employeeRows.map(row => ({
+                    name: `${row.first_name} ${row.last_name}`,
+                    value: row.id,
+                }));
+                const roles = roleRows.map(row => ({
+                    name: row.title,
+                    value: row.id,
+                }));
+
+                // Prompt the user to select the employee and role to update
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: 'Select the employee to update:',
+                        choices: employees,
+                    },
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: 'Select the updated role for the employee:',
+                        choices: roles,
+                    },
+                ]).then(answer => {
+                    // Update the employee's role in the database
+                    const params = []
+                    const employeeId = answer.employee
+                    const roleId = answer.role
+                    const sql = 'UPDATE employee SET role_id = ? WHERE id = ?';
+                    connection.query(sql, [roleId, employeeId], (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            return;
+                        }
+                        console.log(
+                            `Updated role for employee with ID ${employeeId} to ${roleId}`
+                        );
+                        main();
+                    });
+                });
+            });
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // Start the application
 main();
 
