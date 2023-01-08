@@ -102,6 +102,31 @@ async function viewDepartments(connection) {
     }
 }
 
+// View all roles
+async function viewRoles(connection) {
+    // Replace this with your code to retrieve a list of roles from the database
+    try {
+        const params = [];
+        const sql = `SELECT r.id, r.title, d.name as department, r.salary
+        FROM role r
+        INNER JOIN department d ON r.department_id = d.id;`
+        // Retrieve the list of employees from the database
+        connection.query(sql, params, (err, result) => {
+            if (err) {
+                res.status(400).json({ error: err.message });
+                return;
+            }
+            console.table(result)
+        }
+        );
+    } catch (error) {
+        console.error(error);
+    } finally {
+        // Return to the main menu
+        main();
+    }
+}
+
 
 // Start the application
 main();
