@@ -170,6 +170,61 @@ async function addDepartment(connection) {
     }
 }
 
+// Add a role
+async function addRole(connection) {
+    try {
+        // Retrieve the list of departments from the database
+        const sql = 'SELECT name FROM department';
+        connection.query(sql, (err, rows) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+
+            // Extract the department names from the rows
+            const departments = rows.map(row => row.name);
+
+            // Prompt the user to enter the role details
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'title',
+                    message: 'Enter the title of the role:',
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'Enter the salary for the role:',
+                },
+                {
+                    type: 'list',
+                    name: 'department',
+                    message: 'Select the department for the role:',
+                    choices: departments,
+                },
+            ]).then(answer => {
+                // Add the role to the database
+                const params = []
+                const title = answer.title
+                const salary = answer.salary
+                const department = answer.department
+                const sql = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, (SELECT id FROM department WHERE name = ?))';
+                connection.query(sql, [title, salary, department], (err, result) => {
+                    if (err) {
+                        console.log(err)
+                        return;
+                    }
+                    console.log(
+                        `Added role: ${title} (${department}, $${salary})`
+                    );
+                    main();
+                });
+            });
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 // Start the application
 main();
