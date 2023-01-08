@@ -16,7 +16,6 @@ const db = mysql.createConnection(
         host: 'localhost',
         // MySQL username,
         user: 'root',
-        // TODO: Add MySQL password here
         password: 'crunchyroll',
         database: 'company_db'
     },
@@ -24,17 +23,7 @@ const db = mysql.createConnection(
 );
 
 async function main() {
-    const db = mysql.createConnection(
-        {
-            host: 'localhost',
-            // MySQL username,
-            user: 'root',
-            // TODO: Add MySQL password here
-            password: 'crunchyroll',
-            database: 'company_db'
-        },
-        console.log(`Connected to the employee database.`)
-    );
+
     // Show the main menu
     const answer = await inquirer.prompt([
         {
@@ -147,6 +136,37 @@ async function viewEmployees(connection) {
     } finally {
         // Return to the main menu
         main();
+    }
+}
+
+// Add a department
+async function addDepartment(connection) {
+    try {
+        // Prompt the user to enter the name of the department
+        const answer = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'departmentName',
+                message: 'Enter the name of the department:',
+            },
+        ]);
+
+        // Add the department to the database
+        const params = []
+        const departmentName = answer.departmentName
+        const sql = 'INSERT INTO department (name) VALUES ("' + departmentName + '")';
+        // Retrieve the list of employees from the database
+        connection.query(sql, params, (err, result) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+            console.log(`Department ${departmentName} was added to the database.`);
+            main();
+        }
+        );
+    } catch (error) {
+        console.error(error);
     }
 }
 
