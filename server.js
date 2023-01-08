@@ -306,37 +306,8 @@ async function addEmployee(connection) {
     }
 }
 
-
-
 // Start the application
 main();
-
-// WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-//update an employee role
-// WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-
-
-// Make the routes Asynchronous 
-
-// department
-// id: INT PRIMARY KEY
-// name: VARCHAR(30) to hold department name
-
-// role
-// id: INT PRIMARY KEY
-// title: VARCHAR(30) to hold role title
-// salary: DECIMAL to hold role salary
-// department_id: INT to hold reference to department role belongs to
-
-// employee
-// id: INT PRIMARY KEY
-// first_name: VARCHAR(30) to hold employee first name
-// last_name: VARCHAR(30) to hold employee last name
-// role_id: INT to hold reference to employee role
-// manager_id: INT to hold reference to another employee that is the manager of the current employee (null if the employee has no manager)
-
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
