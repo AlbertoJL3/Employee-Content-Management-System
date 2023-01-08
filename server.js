@@ -1,10 +1,50 @@
 const express = require('express');
 // Import and require mysql2
 const mysql = require('mysql2');
-const inquirer = require('inquirer')
-
+const fs = require('fs');
+const inquirer = require('inquirer');
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+//Express Middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Welcome to the Employee Management System Main Page.',
+            name: 'main',
+            default: "",
+            choices: [
+                {
+                    name: "View all departments",
+                },
+                {
+                    name: "View all roles",
+                },
+                {
+                    name: "view all employees",
+                },
+                {
+                    name: "add a department",
+                },
+                {
+                    name: "add a role",
+                },
+                {
+                    name: "add an employee",
+                },
+                {
+                    name: "update an employee role",
+                },
+            ],
+        },
+    ])
+    .then((response) =>
+        console.log(response)
+    );
+
 
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
@@ -54,5 +94,12 @@ const app = express();
 // manager_id: INT to hold reference to another employee that is the manager of the current employee (null if the employee has no manager)
 
 
-
-
+// Default response for any other request (Not Found)
+app.use((req, res) => {
+    res.status(404).end();
+  });
+  
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+  
